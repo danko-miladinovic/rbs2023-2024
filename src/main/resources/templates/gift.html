@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Gift Details</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h1>Gift details</h1>
+  <div class="row">
+      <form class="col-5">
+      <div class="form-group">
+        <label>Name:</label>
+          <b><label th:text="${gift.name}"></label></b>
+      </div>
+      <div class="form-group">
+        <label>Description:</label>
+        <b><label th:text="${gift.description}"></label></b>
+      </div>
+      <div class="form-group">
+          <label>Price:</label>
+          <b><label th:text="${gift.price}"></label></b>
+      </div>
+      <div class="form-group">
+          <label>Tags</label>
+          <table class="table">
+              <tbody id="tagsTableContent">
+              <tr th:each="tag: ${gift.tags}">
+                  <td th:text="${tag.name}"></td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="form-group">
+          <label>Rating:</label>
+          <b><label th:text="${averageRating}"></label></b>
+      </div>
+      <div class="form-group">
+          <label>My rating:</label>
+          <b><label th:text="${userRating}"></label></b>
+      </div>
+      <div class="form-group">
+          <input type="radio" id="1" name="rating" value="1">
+          <label for="1">1</label>
+          <input type="radio" id="2" name="rating" value="2">
+          <label for="2">2</label>
+          <input type="radio" id="3" name="rating" value="3">
+          <label for="3">3</label>
+          <input type="radio" id="4" name="rating" value="4">
+          <label for="4">4</label>
+          <input type="radio" id="5" name="rating" value="5">
+          <label for="5">5</label>
+          <button id="rateGift" class="btn btn-primary mt-2">Rate</button>
+      </div>
+      </form>
+  </div>
+  <div class="mt-2 mb-2">
+      <a th:href="@{'/buy-gift/' + ${gift.id}}">Buy gift</a>
+  </div>
+  <h2 id="gift-comments">Gift comments</h2>
+  <div class="form-group" th:each="comment,iter : ${comments}">
+    <b th:text="${comment.personName}"></b>
+    <div class="form-control" th:id="${iter.index}" th:utext="${comment.comment}" disabled></div>
+  </div>
+  <div class="form-group">
+    <label for="addComment">Add comment</label>
+    <textarea class="form-control" id="addComment" rows="3" placeholder="Comment..."></textarea>
+    <button id="createComment" class="btn btn-primary mt-2">Create comment</button>
+  </div>
+
+  <script th:inline="javascript">
+    const giftID = [[${gift.id}]];
+  </script>
+
+  <script>
+    window.addEventListener('load', function () {
+
+        document.getElementById("rateGift").addEventListener("click", function () {
+            const rating = document.querySelector('input[name="rating"]:checked').value;
+            fetch('/ratings', {
+                method: 'POST',
+                body: JSON.stringify({
+                    giftId: giftID,
+                    rating: rating
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(function () {
+                console.log(window.location)
+                window.location.reload();
+            });
+        });
+
+      document.getElementById("createComment").addEventListener("click", function () {
+        const comment = document.getElementById("addComment").value;
+
+        fetch('/comments', {
+          method: 'POST',
+          body: JSON.stringify({
+            giftId: giftID,
+            comment: comment
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function () {
+          window.location.reload();
+        });
+      });
+    });
+  </script>
+</div>
+</body>
+</html>

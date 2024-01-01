@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create form</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Add gift</h1>
+    <div class="row">
+        <form class="col-5" method="POST" th:action="@{/gifts}">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <select multiple="multiple" name="tags" id="tags">
+                    <option th:each="tag: ${tags}" th:value="${tag.id}" th:text="${tag.name}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="text" id="price" name="price" class="form-control">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
